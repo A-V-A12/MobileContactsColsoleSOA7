@@ -1,6 +1,7 @@
 package gr.aueb.cf.mobilecontacts.validation;
 
 import gr.aueb.cf.mobilecontacts.dto.MobileContactInsertDTO;
+import gr.aueb.cf.mobilecontacts.dto.MobileContactUpdateDTO;
 
 public class ValidationUtil {
     /**
@@ -23,7 +24,7 @@ public class ValidationUtil {
         return errorResponse;
     }
 
-    public static String validateDTO(MobileContactInsertDTO updateDTO){
+    public static String validateDTO(MobileContactUpdateDTO updateDTO){
         String errorResponse = "";
 
         if (updateDTO.getPhoneNumber().length() <= 5)
