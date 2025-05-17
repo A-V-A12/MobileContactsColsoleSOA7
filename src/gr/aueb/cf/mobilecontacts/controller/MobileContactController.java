@@ -14,6 +14,9 @@ import gr.aueb.cf.mobilecontacts.service.IMobileContactService;
 import gr.aueb.cf.mobilecontacts.service.MobileContactServiceImpl;
 import gr.aueb.cf.mobilecontacts.validation.ValidationUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static gr.aueb.cf.mobilecontacts.core.serializer.Serializer.serializeDTO;
 
 public class MobileContactController {
@@ -82,7 +85,47 @@ public class MobileContactController {
         }
     }
 
+    public List<String> getAllContacts() {
+        List<MobileContact> contacts;
+        List<String> serializedList = new ArrayList<>();
+        MobileContactReadOnlyDTO readOnlyDTO;
+        String serialized;
 
+        contacts = service.getAllContacts();
 
+        for (MobileContact contact : contacts) {
+            readOnlyDTO = Mapper.mapMobileContactToDTO(contact);
+            serialized = Serializer.serializeDTO(readOnlyDTO);
+            serializedList.add(serialized);
+        }
+
+        return serializedList;
+    }
+
+    public String getContactByPhoneNumber(String phoneNumber) {
+        MobileContact mobileContact;
+        MobileContactReadOnlyDTO readOnlyDTO;
+        try {
+            mobileContact = service.getContactByPhoneNumber(phoneNumber);
+            readOnlyDTO = Mapper.mapMobileContactToDTO(mobileContact);
+            return "OK\n" + Serializer.serializeDTO(readOnlyDTO);
+        } catch (ContactNotFoundException e) {
+            return "Error.\n" + "Η επαφή δεν βρέθηκε \n";
+        }
+    }
+
+    public String deleteContactByPhoneNumber(String phoneNumber) {
+        MobileContact mobileContact;
+        MobileContactReadOnlyDTO readOnlyDTO;
+        try {
+            mobileContact = service.getContactByPhoneNumber(phoneNumber);
+            readOnlyDTO = Mapper.mapMobileContactToDTO(mobileContact);
+            service.deleteContactByPhoneNumber(phoneNumber);
+
+            return "OK\n Η επαφή διαγράφηκε" + Serializer.serializeDTO(readOnlyDTO);
+        } catch (ContactNotFoundException e) {
+            return "Error.\n" + "Λάθος κατά τη διαγραφή. Η επαφή δεν βρέθηκε";
+        }
+    }
 
 }
